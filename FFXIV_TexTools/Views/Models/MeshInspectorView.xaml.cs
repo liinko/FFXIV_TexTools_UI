@@ -171,7 +171,7 @@ namespace FFXIV_TexTools.Views.Models
             MeshPartsRichTextBox.Document.Blocks.Clear();
 
             var selectedMeshNum = (int)MeshNumComboBox.SelectedItem;
-            var selectedPartNum = (int)PartNumComboBox.SelectedItem;
+            var selectedPartNum = PartNumComboBox.SelectedItem == null ? 0 : (int)PartNumComboBox.SelectedItem;
 
             var meshPart = _meshDataList[selectedMeshNum].MeshPartList[selectedPartNum];
 
