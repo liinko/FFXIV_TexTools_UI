@@ -292,73 +292,73 @@ namespace FFXIV_TexTools.Views
             var item = new XivGenericItemModel
             {
                 Name = modItem.name,
-                ItemCategory = modItem.category,
+                SecondaryCategory = modItem.category,
                 DataFile = XivDataFiles.GetXivDataFile(modItem.datFile)
             };
 
 
             if (modItem.fullPath.Contains("chara/equipment") || modItem.fullPath.Contains("chara/accessory"))
             {
-                item.Category = XivStrings.Gear;
+                item.PrimaryCategory = XivStrings.Gear;
                 item.ModelInfo = new XivModelInfo
                 {
-                    ModelID = int.Parse(fullPath.Substring(17, 4))
+                    PrimaryID = int.Parse(fullPath.Substring(17, 4))
                 };
             }
 
 
             if (modItem.fullPath.Contains("chara/weapon"))
             {
-                item.Category = XivStrings.Gear;
+                item.PrimaryCategory = XivStrings.Gear;
                 item.ModelInfo = new XivModelInfo
                 {
-                    ModelID = int.Parse(fullPath.Substring(14, 4))
+                    PrimaryID = int.Parse(fullPath.Substring(14, 4))
                 };
             }
 
             if (modItem.fullPath.Contains("chara/human"))
             {
-                item.Category = XivStrings.Character;
+                item.PrimaryCategory = XivStrings.Character;
 
                 if (item.Name.Equals(XivStrings.Body))
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = int.Parse(fullPath.Substring(fullPath.IndexOf("/body", StringComparison.Ordinal) + 7, 4))
+                        PrimaryID = int.Parse(fullPath.Substring(fullPath.IndexOf("/body", StringComparison.Ordinal) + 7, 4))
                     };
                 }
                 else if (item.Name.Equals(XivStrings.Hair))
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = int.Parse(fullPath.Substring(fullPath.IndexOf("/hair", StringComparison.Ordinal) + 7, 4))
+                        PrimaryID = int.Parse(fullPath.Substring(fullPath.IndexOf("/hair", StringComparison.Ordinal) + 7, 4))
                     };
                 }
                 else if (item.Name.Equals(XivStrings.Face))
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = int.Parse(fullPath.Substring(fullPath.IndexOf("/face", StringComparison.Ordinal) + 7, 4))
+                        PrimaryID = int.Parse(fullPath.Substring(fullPath.IndexOf("/face", StringComparison.Ordinal) + 7, 4))
                     };
                 }
                 else if (item.Name.Equals(XivStrings.Tail))
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = int.Parse(fullPath.Substring(fullPath.IndexOf("/tail", StringComparison.Ordinal) + 7, 4))
+                        PrimaryID = int.Parse(fullPath.Substring(fullPath.IndexOf("/tail", StringComparison.Ordinal) + 7, 4))
                     };
                 }
             }
 
             if (modItem.fullPath.Contains("chara/common"))
             {
-                item.Category = XivStrings.Character;
+                item.PrimaryCategory = XivStrings.Character;
 
                 if (item.Name.Equals(XivStrings.Face_Paint))
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("_", StringComparison.Ordinal) + 1, 1))
+                        PrimaryID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("_", StringComparison.Ordinal) + 1, 1))
                     };
                 }
                 else if (item.Name.Equals(XivStrings.Equipment_Decals))
@@ -367,7 +367,7 @@ namespace FFXIV_TexTools.Views
                     {
                         item.ModelInfo = new XivModelInfo
                         {
-                            ModelID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("_", StringComparison.Ordinal) + 1, 3))
+                            PrimaryID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("_", StringComparison.Ordinal) + 1, 3))
                         };
                     }
                 }
@@ -375,42 +375,42 @@ namespace FFXIV_TexTools.Views
 
             if (modItem.fullPath.Contains("chara/monster"))
             {
-                item.Category = XivStrings.Companions;
+                item.PrimaryCategory = XivStrings.Companions;
 
                 item.ModelInfo = new XivModelInfo
                 {
-                    ModelID = int.Parse(fullPath.Substring(15, 4)),
-                    Body = int.Parse(fullPath.Substring(fullPath.IndexOf("/body", StringComparison.Ordinal) + 7, 4))
+                    PrimaryID = int.Parse(fullPath.Substring(15, 4)),
+                    SecondaryID = int.Parse(fullPath.Substring(fullPath.IndexOf("/body", StringComparison.Ordinal) + 7, 4))
                 };
             }
 
             if (modItem.fullPath.Contains("chara/demihuman"))
             {
-                item.Category = XivStrings.Companions;
+                item.PrimaryCategory = XivStrings.Companions;
 
                 item.ModelInfo = new XivModelInfo
                 {
-                    Body = int.Parse(fullPath.Substring(17, 4)),
-                    ModelID = int.Parse(fullPath.Substring(fullPath.IndexOf("t/e", StringComparison.Ordinal) + 3, 4))
+                    SecondaryID = int.Parse(fullPath.Substring(17, 4)),
+                    PrimaryID = int.Parse(fullPath.Substring(fullPath.IndexOf("t/e", StringComparison.Ordinal) + 3, 4))
                 };
             }
 
             if (modItem.fullPath.Contains("ui/"))
             {
-                item.Category = XivStrings.UI;
+                item.PrimaryCategory = XivStrings.UI;
 
                 if (modItem.fullPath.Contains("ui/uld") || modItem.fullPath.Contains("ui/map"))
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = 0
+                        PrimaryID = 0
                     };
                 }
                 else
                 {
                     item.ModelInfo = new XivModelInfo
                     {
-                        ModelID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("/", StringComparison.Ordinal) + 1,
+                        PrimaryID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("/", StringComparison.Ordinal) + 1,
                             6))
                     };
                 }
@@ -418,11 +418,11 @@ namespace FFXIV_TexTools.Views
 
             if (modItem.fullPath.Contains("/hou/"))
             {
-                item.Category = XivStrings.Housing;
+                item.PrimaryCategory = XivStrings.Housing;
 
                 item.ModelInfo = new XivModelInfo
                 {
-                    ModelID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("_m", StringComparison.Ordinal) + 2, 3))
+                    PrimaryID = int.Parse(fullPath.Substring(fullPath.LastIndexOf("_m", StringComparison.Ordinal) + 2, 3))
                 };
             }
 
@@ -627,13 +627,18 @@ namespace FFXIV_TexTools.Views
         /// </summary>
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            var selectedItem = e.NewValue as Category;
+            if (selectedItem == null || selectedItem.Item == null)
+            {
+                return;
+            }
+
             TextureMapComboBox.Items.Clear();
             ModelTypeComboBox.Items.Clear();
             MaterialComboBox.Items.Clear();
             CustomTextureTextBox.Text = string.Empty;
             CustomModelTextBox.Text = string.Empty;
 
-            var selectedItem = e.NewValue as Category;
 
             var modList = JsonConvert.DeserializeObject<ModList>(File.ReadAllText(_modListDirectory.FullName));
 
@@ -716,6 +721,13 @@ namespace FFXIV_TexTools.Views
                         ttp.Type = XivTexType.Other;
                     }
                 }
+                else if (itemPath.Contains(".tex"))
+                {
+                    modCB.Name = $"{XivTexType.Other} ({Path.GetFileNameWithoutExtension(itemPath)})";
+                    modCB.SelectedMod = modItem;
+                    ttp.Type = XivTexType.Other;
+
+                }
 
                 if (modCB.Name != null)
                 {
@@ -735,9 +747,9 @@ namespace FFXIV_TexTools.Views
                     }
                     else
                     {
-                        var modelId = ((IItemModel)selectedItem.Item).ModelInfo.ModelID;
+                        var modelId = ((IItemModel)selectedItem.Item).ModelInfo.PrimaryID;
 
-                        if (selectedItem.Item.Category.Equals(XivStrings.Character))
+                        if (selectedItem.Item.PrimaryCategory.Equals(XivStrings.Character))
                         {
                             var item = selectedItem.Item;
 
@@ -848,7 +860,7 @@ namespace FFXIV_TexTools.Views
         /// </summary>
         private void GetCustomTextureButton_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog { Filter = "Texture Files(*.DDS)|*.DDS" };
+            var openFileDialog = new OpenFileDialog { Filter = "Texture Files(*.DDS;*.BMP;*.PNG) |*.DDS;*.BMP;*.PNG" };
 
 
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -893,7 +905,7 @@ namespace FFXIV_TexTools.Views
 
             var includedModsList = IncludedModsList.Items.Cast<IncludedMods>().ToList();
 
-            if (includedModsList.Any(item => item.Name.Equals(includedMod.Name)))
+            if (includedModsList.Any(item => item.FullPath.Equals(includedMod.FullPath)))
             {
                 if (FlexibleMessageBox.Show(
                         string.Format(UIMessages.ExistingOption, includedMod.Name),
@@ -1210,8 +1222,18 @@ namespace FFXIV_TexTools.Views
             var includedModsList = IncludedModsList.Items.Cast<IncludedMods>().ToList();
             var mdl = new Mdl(_gameDirectory, XivDataFiles.GetXivDataFile(mod.datFile));
             var xivMdl = await mdl.GetMdlData(itemModel, GetRace(mod.fullPath), null, null, mod.data.originalOffset);
-            var warnings = await mdl.ImportModel(itemModel, xivMdl, new DirectoryInfo(CustomModelTextBox.Text), null, XivStrings.TexTools, 
-                Settings.Default.DAE_Plugin_Target, true);
+            var warnings = new Dictionary<string, string>();
+            try
+            {
+                warnings = await mdl.ImportModel(itemModel, xivMdl, new DirectoryInfo(CustomModelTextBox.Text), null, XivStrings.TexTools, 
+                    Settings.Default.DAE_Plugin_Target, true);
+            }
+            catch(Exception ex)
+            {
+                FlexibleMessageBox.Show(ex.Message, UIMessages.AdvancedImportErrorTitle,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (warnings.Count > 0)
             {

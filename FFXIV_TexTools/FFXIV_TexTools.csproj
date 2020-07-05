@@ -147,6 +147,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.113.1\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
@@ -234,6 +237,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FeedbackControl.xaml.cs">
+      <DependentUpon>FeedbackControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Custom\CustomEffectsManager.cs" />
     <Compile Include="Custom\CustomMeshGeometryModel3D.cs" />
     <Compile Include="Helpers\FlexibleMessageBox.cs" />
@@ -286,10 +292,12 @@
     <Compile Include="ViewModels\CustomizeViewModel.cs" />
     <Compile Include="ViewModels\IconSearchViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MaterialEditorViewModel.cs" />
     <Compile Include="ViewModels\ModConverterViewModel.cs" />
     <Compile Include="ViewModels\ModelSearchViewModel.cs" />
     <Compile Include="ViewModels\ModelViewModel.cs" />
     <Compile Include="ViewModels\ModListViewModel.cs" />
+    <Compile Include="ViewModels\SharedItemsViewModel.cs" />
     <Compile Include="ViewModels\TextureViewModel.cs" />
     <Compile Include="ViewModels\Viewport3DViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
@@ -323,9 +331,6 @@
     <Compile Include="Views\Models\ModelInspector.xaml.cs">
       <DependentUpon>ModelInspector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Textures\ExportTextureOptionsView.xaml.cs">
-      <DependentUpon>ExportTextureOptionsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Models\ImportModelOptionsView.xaml.cs">
       <DependentUpon>ImportModelOptionsView.xaml</DependentUpon>
     </Compile>
@@ -356,6 +361,12 @@
     <Compile Include="Views\ModPack\ModPackWizard.xaml.cs">
       <DependentUpon>ModPackWizard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Textures\MaterialEditorHelpView.xaml.cs">
+      <DependentUpon>MaterialEditorHelpView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Textures\MaterialEditorView.xaml.cs">
+      <DependentUpon>MaterialEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Textures\MoreTextureOptionsView.xaml.cs">
       <DependentUpon>MoreTextureOptionsView.xaml</DependentUpon>
     </Compile>
@@ -368,6 +379,9 @@
     <Compile Include="Views\ModPack\SimpleModPackImporter.xaml.cs">
       <DependentUpon>SimpleModPackImporter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SharedItems\SharedItemsView.xaml.cs">
+      <DependentUpon>SharedItemsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Textures\TextureView.xaml.cs">
       <DependentUpon>TextureView.xaml</DependentUpon>
     </Compile>
@@ -377,6 +391,10 @@
     <Compile Include="Views\ModPack\WizardModPackControl.xaml.cs">
       <DependentUpon>WizardModPackControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\FeedbackControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -433,10 +451,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Textures\ExportTextureOptionsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Models\ImportModelOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -477,6 +491,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Textures\MaterialEditorHelpView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Textures\MaterialEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Textures\MoreTextureOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -490,6 +512,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ModPack\SimpleModPackImporter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SharedItems\SharedItemsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -637,6 +663,8 @@ move $(TargetDir)*.dll $(TargetDir)lib</PostBuildEvent>
     <Error Condition="!Exists('..\packages\Microsoft.HLSL.CSharpVB.1.0.1\build\Microsoft.HLSL.CSharpVB.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.HLSL.CSharpVB.1.0.1\build\Microsoft.HLSL.CSharpVB.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.Toolset.3.3.1\build\Microsoft.Net.Compilers.Toolset.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.Toolset.3.3.1\build\Microsoft.Net.Compilers.Toolset.props'))" />
     <Error Condition="!Exists('..\packages\TeximpNet.1.4.1\build\TeximpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TeximpNet.1.4.1\build\TeximpNet.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <Import Project="..\packages\TeximpNet.1.4.1\build\TeximpNet.targets" Condition="Exists('..\packages\TeximpNet.1.4.1\build\TeximpNet.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
 </Project>

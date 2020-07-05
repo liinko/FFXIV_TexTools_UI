@@ -16,6 +16,7 @@
 
 using FFXIV_TexTools.Helpers;
 using FFXIV_TexTools.Resources;
+using FFXIV_TexTools.Properties;
 using MahApps.Metro;
 using Newtonsoft.Json;
 using System;
@@ -33,6 +34,7 @@ using xivModdingFramework.Helpers;
 using xivModdingFramework.Mods.DataContainers;
 using xivModdingFramework.SqPack.FileTypes;
 using Application = System.Windows.Application;
+using xivModdingFramework.Cache;
 
 namespace FFXIV_TexTools.Views
 {
@@ -126,6 +128,16 @@ namespace FFXIV_TexTools.Views
                 Debug.WriteLine($"Loading Canceled\n\n{ex.Message}");
             }
 
+            try
+            {
+                AddText($"\nRebuilding Cache...\n", "Blue");
+                await CheckCache();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Cache Rebuild Failed.\n\n{ex.Message}");
+            }
+
         }
 
         /// <summary>
@@ -216,6 +228,19 @@ namespace FFXIV_TexTools.Views
                 AddText($"\t{UIStrings.ProblemCheck_DatMissing} \n", "Red");
             }
         }
+        private async Task CheckCache()
+        {
+
+            var gameDirectory = new DirectoryInfo(Settings.Default.FFXIV_Directory);
+            var lang = XivLanguages.GetXivLanguage(Settings.Default.Application_Language);
+            await Task.Run(async () =>
+            {
+                var _cache = new XivCache(gameDirectory, lang);
+                _cache.RebuildCache();
+            });
+            AddText("\tCache Rebuilt Successfully.", textColor);
+            AddText("\t\u2714\n", "Green");
+        }
 
         private async Task CheckDatSizes()
         {
@@ -265,8 +290,40 @@ namespace FFXIV_TexTools.Views
             var addTextLock = new object();
             var modListDirectory =
                 new DirectoryInfo(Path.Combine(_gameDirectory.Parent.Parent.FullName, XivStrings.ModlistFilePath));
+            var modList = new ModList();
 
-            var modList = JsonConvert.DeserializeObject<ModList>(File.ReadAllText(modListDirectory.FullName));
+            try
+            {
+                modList = JsonConvert.DeserializeObject<ModList>(File.ReadAllText(modListDirectory.FullName));
+            }
+            catch
+            {
+                FlexibleMessageBox.Show(
+                    $"{UIStrings.ProblemCheck_ErrorsFound}\n", "Corrupted ModList Detected",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return Task.Run( async () =>
+                {
+                    var problemChecker = new ProblemChecker(_gameDirectory);
+                    var indexBackupsDirectory = new DirectoryInfo(Settings.Default.Backup_Directory);
+                    try
+                    {
+                        await problemChecker.PerformStartOver(indexBackupsDirectory, null, XivLanguages.GetXivLanguage(Properties.Settings.Default.Application_Language));
+
+                        Dispatcher.Invoke(() => AddText("\t\u2714", "Green"));
+                        Dispatcher.Invoke(() => AddText("\tModList restored", "Green"));
+                    }
+                    catch
+                    {
+                        Dispatcher.Invoke(() => AddText("\t\u2716", "Red"));
+                        Dispatcher.Invoke(() => AddText($"\tModList Corrupted\n", "Red"));
+
+                        FlexibleMessageBox.Show("Unable to repair TexTools\n\n" +
+                            "Please manually update your index backups.", "Repair Failed",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                });                    
+            }
 
             var dat = new Dat(_gameDirectory);
 
@@ -470,7 +527,7 @@ namespace FFXIV_TexTools.Views
 
         private async Task CheckBackups()
         {
-            var filesToCheck = new XivDataFile[] {XivDataFile._01_Bgcommon, XivDataFile._04_Chara, XivDataFile._06_Ui};
+            var filesToCheck = new XivDataFile[] { XivDataFile._0A_Exd, XivDataFile._01_Bgcommon, XivDataFile._04_Chara, XivDataFile._06_Ui};
 
             var backupDirectory = new DirectoryInfo(Properties.Settings.Default.Backup_Directory);
 
